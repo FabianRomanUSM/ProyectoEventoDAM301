@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1020707794328",
+    "project_id": "proyectoevento-a10a1",
+    "storage_bucket": "proyectoevento-a10a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020707794328:android:3a59d53938691906be8fed",
+        "android_client_info": {
+          "package_name": "com.dam301.proyectoevento"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0A-3XfY-6zU8wRkbzkmAlgQ37_T11rs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
