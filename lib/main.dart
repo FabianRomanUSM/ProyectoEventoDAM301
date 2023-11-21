@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:proyecto_evento/pages/eventos_page.dart';
+import 'package:proyecto_evento/pages/login_page.dart';
 
 
 void main() async{
@@ -35,13 +36,13 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         appBarTheme: AppBarTheme(
-            backgroundColor: Colors.purple.shade700,
+            backgroundColor: Colors.red.shade900,
             foregroundColor: Colors.white,
           ),
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.purpleAccent),
           useMaterial3: true,
       ),
-      home: const EventosPage(),
+      home: EventosPage(),
     );
   }
 }
