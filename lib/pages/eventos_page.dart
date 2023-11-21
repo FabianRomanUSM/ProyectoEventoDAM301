@@ -36,7 +36,7 @@ class EventosPage extends StatelessWidget {
             width: double.infinity,
             // child: Text(this.emailUsuario(context), style: TextStyle(color: Colors.white)),
           ),
-          //LISTA DE ESTUDIANTES
+          //LISTA DE EVENTOS
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(10),
@@ -67,8 +67,8 @@ class EventosPage extends StatelessWidget {
                           ),
                           child: ListTile(
                             leading: Icon(MdiIcons.account),
-                            title: Text('${evento['nombre']} ${evento['apellido']}'),
-                            subtitle: Text(evento['carrera']),
+                            title: Text('${evento['nombre']}'),
+                            subtitle: Text(evento['descripcion']),
                             onLongPress: () {
                               mostrarInfoEvento(context, evento);
                             },
@@ -86,8 +86,8 @@ class EventosPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventosAgregarPage());
-          Navigator.push(context, route);
+          // MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventosAgregarPage());
+          // Navigator.push(context, route);
         },
       ),
     );
@@ -117,11 +117,11 @@ class EventosPage extends StatelessWidget {
                   margin: EdgeInsets.fromLTRB(5, 0, 0, 10),
                   child: Text('Información del Eventos', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF051E34))),
                 ),
-                CampoEvento(dato: '${evento['nombre']} ${evento['apellido']}', icono: MdiIcons.account),
-                CampoEvento(dato: '${evento['edad']} años', icono: MdiIcons.cake),
-                CampoEvento(dato: '${evento['carrera']}', icono: MdiIcons.schoolOutline),
-                CampoEvento(dato: evento['jornada'] == 'd' ? 'Jornada Diurna' : 'Jornada Vespertina', icono: MdiIcons.timelapse),
-                CampoEvento(dato: formatoFecha.format(evento['fecha_matricula'].toDate()), icono: MdiIcons.calendarRange),
+                CampoEvento(dato: '${evento['nombre']} ${evento['tipo']}', icono: MdiIcons.account),
+                // CampoEvento(dato: '${evento['lugar']} años', icono: MdiIcons.cake),
+                // CampoEvento(dato: '${evento['nombre']}', icono: MdiIcons.schoolOutline),
+                // CampoEvento(dato: formatoFecha.format(evento['fecha_actual'].toDate()), icono: MdiIcons.calendarRange),
+                // CampoEvento(dato: formatoHora.format(evento['fecha_actual'].toDate()), icono: MdiIcons.calendarRange),
                 Spacer(),
                 Container(
                   width: double.infinity,
