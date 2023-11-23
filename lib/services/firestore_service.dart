@@ -19,6 +19,8 @@ class FirestoreService {
     });
   }
 
+
+
   //borrar evento
   Future<void> eventosBorrar(String docId) async {
     return FirebaseFirestore.instance.collection('eventos').doc(docId).delete();

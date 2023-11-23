@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_evento/pages/eventos_page.dart';
 import 'package:proyecto_evento/pages/login_page.dart';
 
+// import 'pages/administrador_page.dart';
+
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         appBarTheme: AppBarTheme(
-            backgroundColor: Colors.red.shade900,
+            backgroundColor: Colors.brown.shade900,
             foregroundColor: Colors.white,
           ),
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.purpleAccent),
