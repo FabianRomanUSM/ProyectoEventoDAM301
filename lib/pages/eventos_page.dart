@@ -2,20 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:proyecto_evento/pages/eventos_agregar.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
-import 'package:proyecto_evento/widgets/campo_eventos.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_flip_card/flutter_flip_card.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class EventosPage extends StatelessWidget {
-  final formatoFecha = DateFormat('dd-MM-yyyy');
-  bool like = false;
+  final formatoFecha = DateFormat('dd-MM-yyyy HH:mm');
+  final formatoMes = DateFormat('MMM');
+  final formatoDia = DateFormat('dd');
+
+  bool like = true;
+  final flip = GestureFlipCardController();
 
   @override
   Widget build(BuildContext context) {
+    tz.initializeTimeZones();
+    final location = tz.getLocation('America/Santiago');
+    tz.setLocalLocation(location);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Eventos'),
@@ -35,7 +45,7 @@ class EventosPage extends StatelessWidget {
               onPressed: () {
                 // Acción a realizar al hacer clic en el icono de Google.
               },
-              icon: Logo(Logos.google, size: 30),
+              icon: Icon(Icons.ac_unit), // Reemplaza con tu icono de Google
               color: Colors.black,
             ),
           ),
@@ -43,7 +53,7 @@ class EventosPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text('Estado de conección '),
+          Text('Estado de conexión '),
           // EMAIL USER
           Container(
             padding: EdgeInsets.all(10),
@@ -62,85 +72,174 @@ class EventosPage extends StatelessWidget {
                       snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   } else {
+                    var eventos = snapshot.data!.docs;
                     return ListView.separated(
-                      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                      padding: EdgeInsets.symmetric(horizontal: 5),
                       itemBuilder: (context, index) {
-                        var evento = snapshot.data!.docs[index].data()
-                            as Map<String, dynamic>;
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/background_image.jpg'),
-                              fit: BoxFit.cover,
+                        var evento = eventos[index].data() as Map<String, dynamic>;
+                        DateTime fecha_evento = (evento['fecha'] as Timestamp).toDate();
+                        DateTime hora_evento = (evento['fecha'] as Timestamp).toDate();
+                        return GestureFlipCard(
+                          controller: flip,
+                          axis: FlipAxis.vertical,
+                          enableController: true,
+                          animationDuration: const Duration(milliseconds: 1000),
+                          frontWidget: Center(
+                            child: Container(
+                              height: 200,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: Colors.black,
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/background_image.jpg'),
+                                    fit: BoxFit.cover,
+                                    opacity: 0.5,
+                                  ),
+                                ),
+                                child: Container(
+                                  child: ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: Container(
+                                        color: Colors.orange.shade700,
+                                        width: 60,
+                                        height: 60,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(formatoMes.format(fecha_evento),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14)),
+                                            Text(formatoDia.format(fecha_evento),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    title: Row(
+                                      children: [
+                                        Text(
+                                          '${evento['nombre']}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                              color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        Text('${evento['like']}',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        Text(' me gusta',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ],
+                                    ),
+                                    trailing: InkWell(
+                                      child: Icon(
+                                        like
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: like
+                                            ? Colors.blue.shade900
+                                            : Colors.red.shade900,
+                                        size: 40,
+                                      ),
+                                      onTap: () {
+                                        like = !like;
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                          child: ListTile(
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: Container(
-                                color: Colors.orange.shade700,
-                                width: 60,
-                                height: 60,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('31',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20)),
-                                    Text('NOV',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15)),
-                                  ],
+                          backWidget: Container(
+                            height: 200,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(15.0),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/background_image.jpg'),
+                                  fit: BoxFit.cover,
+                                  opacity: 0.2,
                                 ),
                               ),
-                            ),
-                            title: Row(
-                              children: [
-                                Text(
-                                  '${evento['nombre']}',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            subtitle: Row(
-                              children: [
-                                Text('${evento['like']}',
-                                    style: TextStyle(color: Colors.white)),
-                                Text(' me gusta',
-                                    style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                            trailing: InkWell(
-                              child: Icon(
-                                like
-                                    ? OctIcons.heart_fill_16
-                                    : OctIcons.heart_16,
-                                color: like
-                                    ? Colors.blue.shade900
-                                    : Colors.red.shade900,
-                                size: 40,
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Información del Evento',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                  SizedBox(height: 6),
+                                  Text(
+                                    '${evento['nombre']}',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    '${evento['descripcion']}',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    '${evento['tipo']}',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.thumb_up, color: Colors.white),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Like: ${evento['like']}',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    formatoFecha.format(hora_evento),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ],
                               ),
-                              onTap: () {
-                                like = !like;
-                              },
                             ),
-                            onLongPress: () {
-                              mostrarInfoEvento(context, evento);
-                            },
                           ),
                         );
                       },
                       separatorBuilder: (context, index) => Divider(),
-                      itemCount: snapshot.data!.docs.length,
+                      itemCount: eventos.length,
                     );
                   }
                 },
@@ -152,61 +251,9 @@ class EventosPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          // MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventosAgregarPage());
-          // Navigator.push(context, route);
+          // Implementa la lógica para agregar eventos
         },
       ),
     );
   }
-
-  void mostrarInfoEvento(BuildContext context, evento) {
-    showBottomSheet(
-      context: context,
-      builder: (context) {
-        return SizedBox(
-          height: 350,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.lightBlue.shade50,
-              border: Border.all(color: Colors.blue.shade900, width: 2),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.0),
-                topRight: Radius.circular(10.0),
-              ),
-            ),
-            padding: EdgeInsets.all(10),
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(5, 0, 0, 10),
-                  child: Text('Información del Evento',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF051E34))),
-                ),
-                Spacer(),
-                Container(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    style:
-                        OutlinedButton.styleFrom(backgroundColor: Colors.white),
-                    child: Text('Cerrar'),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // String emailUsuario(BuildContext context) {
-  //   final usuario = Provider.of<User?>(context);
-  //   return usuario!.email.toString();
-  // }
 }
