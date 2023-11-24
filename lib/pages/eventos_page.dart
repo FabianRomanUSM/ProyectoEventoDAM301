@@ -16,13 +16,22 @@ import 'package:just_bottom_sheet/drag_zone_position.dart';
 import 'package:just_bottom_sheet/just_bottom_sheet.dart';
 import 'package:just_bottom_sheet/just_bottom_sheet_configuration.dart';
 
-class EventosPage extends StatelessWidget {
+class EventosPage extends StatefulWidget {
+  @override
+  State<EventosPage> createState() => _EventosPageState();
+}
+
+class _EventosPageState extends State<EventosPage> {
   final formatoFecha = DateFormat(' dd-MMM-yyyy HH:mm');
+
   final formatoMes = DateFormat('MMM');
+
   final formatoDia = DateFormat('dd');
+
   final scrollController = ScrollController();
 
   bool like = true;
+
   final flip = GestureFlipCardController();
 
   @override
@@ -58,7 +67,7 @@ class EventosPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text('Estado de conexión '),
+          Text('Estado de conexión'),
           // EMAIL USER
           Container(
             padding: EdgeInsets.all(10),
@@ -112,7 +121,7 @@ class EventosPage extends StatelessWidget {
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                         child: Container(
-                                          color: Colors.orange.shade700,
+                                          color: Colors.orange.shade800,
                                           width: 60,
                                           height: 60,
                                           child: Column(
@@ -141,32 +150,38 @@ class EventosPage extends StatelessWidget {
                                       ),
                                       title: Row(
                                         children: [
-                                          Text(
-                                            '${evento['nombre']}',
-                                            style: TextStyle(
+                                          Expanded(
+                                            child: Text(
+                                              '${evento['nombre']}',
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18,
-                                                color: Colors.white),
+                                                color: Colors.white,
+                                              ),
+                                              softWrap: true,
+                                              maxLines:
+                                                  6, // Puedes ajustar el número de líneas según tus necesidades
+                                              overflow: TextOverflow
+                                                  .ellipsis, // Puedes cambiar esto según tus necesidades
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      // subtitle: Container(
-                                      //   padding: EdgeInsets.fromLTRB(0, 130, 0,0),
-                                      //   child: Row(
-                                      //     children: [
-                                      //       Text(
-                                      //     '${evento['like']} ',
-                                      //     style: TextStyle(
-                                      //         fontSize: 14,
-                                      //         fontWeight: FontWeight.bold,
-                                      //         color: Colors.white),
-                                      //   ),
-                                      //   Icon(Icons.thumb_up, color: Colors.white,size: 16,),
-                                      //     ],
-                                      //   ),
-                                      // ),
+                                      subtitle: Container(
+                                        child: Row(
+                                          children: [
+                                            Icon(Bootstrap.clipboard_check_fill, color: Colors.white,size: 16,),
+                                            Text(
+                                          ' ${evento['estado']} ',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                          ],
+                                        ),
+                                      ),
                                       trailing: Container(
-                                        padding: EdgeInsets.fromLTRB(0, 150, 0,0),
                                         child: InkWell(
                                           child: Icon(
                                             like
@@ -216,7 +231,7 @@ class EventosPage extends StatelessWidget {
                                                   if (index == 0) {
                                                     // Primer elemento con una imagen y un texto
                                                     return Material(
-                                                      color: Colors.transparent,
+                                                      color: Colors.amberAccent,
                                                       child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
@@ -239,7 +254,7 @@ class EventosPage extends StatelessWidget {
                                                   } else if (index == 1) {
                                                     // Segundo elemento con un texto
                                                     return Material(
-                                                      color: Colors.transparent,
+                                                      color: Colors.black,
                                                       child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
@@ -252,6 +267,8 @@ class EventosPage extends StatelessWidget {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
+                                                              color:
+                                                                  Colors.white,
                                                             ),
                                                           ),
                                                         ],
@@ -273,8 +290,7 @@ class EventosPage extends StatelessWidget {
                                                 .withOpacity(0.5),
                                           ),
                                         );
-                                      }
-                                    ),
+                                      }),
                                 ),
                               ),
                             ),
@@ -301,23 +317,27 @@ class EventosPage extends StatelessWidget {
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white)),
-                                  SizedBox(height: 6),
-                                  Text(
-                                    '${evento['nombre']}',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
+                                  SizedBox(height: 4),
+                                  // Text(
+                                  //   '${evento['nombre']}',
+                                  //   style: TextStyle(
+                                  //       fontSize: 18,
+                                  //       fontWeight: FontWeight.bold,
+                                  //       color: Colors.white),
+                                  // ),
                                   SizedBox(height: 4),
                                   Row(
                                     children: [
                                       SizedBox(width: 4),
-                                      Icon(Bootstrap.ticket_perforated, color: Colors.white, size: 16,),
+                                      Icon(
+                                        Bootstrap.ticket_perforated,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
                                       Text(
                                         ' ${evento['tipo']} ',
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white),
                                       ),
@@ -327,11 +347,15 @@ class EventosPage extends StatelessWidget {
                                   Row(
                                     children: [
                                       SizedBox(width: 4),
-                                      Icon(Bootstrap.pin_map_fill, color: Colors.white, size: 16,),
+                                      Icon(
+                                        Bootstrap.pin_map_fill,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
                                       Text(
                                         ' ${evento['lugar']} ',
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white),
                                       ),
@@ -341,11 +365,15 @@ class EventosPage extends StatelessWidget {
                                   Row(
                                     children: [
                                       SizedBox(width: 4),
-                                      Icon(Bootstrap.calendar, color: Colors.white, size: 16,),
+                                      Icon(
+                                        Bootstrap.calendar,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
                                       Text(
                                         formatoFecha.format(hora_evento),
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white),
                                       ),
@@ -358,11 +386,15 @@ class EventosPage extends StatelessWidget {
                                       Text(
                                         ' ${evento['like']} ',
                                         style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white),
                                       ),
-                                      Icon(Bootstrap.hand_thumbs_up_fill, color: Colors.white, size: 16,),
+                                      Icon(
+                                        Bootstrap.hand_thumbs_up_fill,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -382,9 +414,11 @@ class EventosPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
+        onPressed: () {
+          MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventoAgregarPage());
+          Navigator.push(context, route);
+        },
       ),
     );
   }

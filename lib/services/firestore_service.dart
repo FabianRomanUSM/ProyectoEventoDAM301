@@ -6,16 +6,17 @@ class FirestoreService {
   }
 
   //insertar nuevo estudiante
-  Future<void> eventosAgregar(String nombre, DateTime fecha, DateTime hora, String lugar, String descripcion, String tipo, int like, String foto) async {
+  Future<void> eventosAgregar(String nombre, DateTime fecha, /*DateTime hora,*/ String lugar, String descripcion, String tipo, int like, /*String foto,*/ String estado) async {
     return FirebaseFirestore.instance.collection('eventos').doc().set({
       'nombre': nombre,
       'fecha': fecha,
-      'hora': hora,
+      // 'hora': hora,
       'lugar': lugar,
       'descripcion': descripcion,
       'tipo': tipo,
       'like': like,
-      'foto': foto,
+      // 'foto': foto,
+      'estado':estado,
     });
   }
 
@@ -27,7 +28,7 @@ class FirestoreService {
   }
 
   //obtener la lista de evento
-  Future<QuerySnapshot> carreras() async {
+  Future<QuerySnapshot> ordenar() async {
     return FirebaseFirestore.instance.collection('evento').orderBy('nombre').get();
   }
 }
