@@ -51,6 +51,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   omni_datetime_picker: ^1.0.9
+  image_picker: ^1.0.4
 
 
 dev_dependencies:

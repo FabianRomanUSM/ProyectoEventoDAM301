@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:proyecto_evento/services/select_image.dart';
 
 class EventoAgregarPage extends StatefulWidget {
   EventoAgregarPage({Key? key}) : super(key: key);
@@ -27,6 +30,8 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
 
   DateTime fechaYHoraEvento = DateTime.now();
   final formatoFechaYHora = DateFormat('dd/MM/yyyy hh:mm a');
+
+  File? imagen_a_cargar;
 
   @override
   Widget build(BuildContext context) {
@@ -194,6 +199,30 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                   ],
                 ),
               ),
+              //FOTO
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.greenAccent.shade700),
+                onPressed: () async{
+                  final imagen = await getImage();
+                  setState((){
+                    imagen_a_cargar = File(imagen!.path);
+                  });
+                }, 
+                child: Text ('Subir imagen', style: TextStyle(color: Colors.white))),
+              
+              
+              Column(
+                children: [
+                  imagen_a_cargar != null ? Image.file(imagen_a_cargar!) :
+                  Container(
+                    margin: const EdgeInsets.all(5),
+                    height: 200,
+                    width: double.infinity,
+                    color: Colors.grey.shade400,
+                  ),
+                ],
+              ),
+              //BOTON
               Container(
                 margin: EdgeInsets.only(top: 30),
                 width: double.infinity,
