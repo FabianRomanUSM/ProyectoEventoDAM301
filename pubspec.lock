@@ -240,6 +240,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
+  just_bottom_sheet:
+    dependency: "direct main"
+    description:
+      name: just_bottom_sheet
+      sha256: be6cff8e8bf5e956a093d138dfafa452aa4d2ab8d1029929b07b4a3c16eac5b8
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.0"
   lints:
     dependency: transitive
     description:
