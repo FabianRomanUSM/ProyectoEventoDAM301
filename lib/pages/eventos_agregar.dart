@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 class EventoAgregarPage extends StatefulWidget {
   EventoAgregarPage({Key? key}) : super(key: key);
@@ -20,10 +22,11 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
   TextEditingController estadoCtrl = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
-  DateTime fecha_matricula = DateTime.now();
+  DateTime fecha_actual = DateTime.now();
   final formatoFecha = DateFormat('dd-MMM-yyyy');
-  // String jornada = 'd';
-  // String carrera = '';
+
+  DateTime fechaYHoraEvento = DateTime.now();
+  final formatoFechaYHora = DateFormat('dd/MM/yyyy hh:mm a');
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +72,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                   return null;
                 },
               ),
-              //DESCRIPCIÓN
+              //DESCRIPCION
               TextFormField(
                 controller: descripcionCtrl,
                 decoration: InputDecoration(
@@ -101,155 +104,113 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                   return null;
                 },
               ),
-              //ESTADO
-              TextFormField(
-                controller: estadoCtrl,
-                decoration: InputDecoration(
-                  label: Text('Estado'),
-                ),
-                validator: (estado) {
-                  if (estado!.isEmpty) {
-                    return 'Indique el estado del evento';
-                  }
-                  if (estado.length < 3) {
-                    return 'El estado debe ser de al menos 3 letras';
-                  }
-                  return null;
-                },
-              ),
-              // //LIKE
+              // //ESTADO
               // TextFormField(
-              //   controller: likeCtrl,
+              //   controller: estadoCtrl,
               //   decoration: InputDecoration(
-              //     label: Text('Me gusta'),
+              //     label: Text('Estado'),
               //   ),
-              //   validator: (like) {
-              //     if (like!.isEmpty) {
-              //       return 'Indique la edad del estudiante';
+              //   validator: (estado) {
+              //     if (estado!.isEmpty) {
+              //       return 'Indique el estado del evento';
               //     }
-              //     try {
-              //       int.parse(like);
-              //     } catch (e) {
-              //       return 'Edad debe ser un número entero';
-              //     }
-              //     int intEdad = int.parse(like);
-              //     if (intEdad < 0) {
-              //       return 'Edad debe ser mayor o igual a cero';
+              //     if (estado.length < 3) {
+              //       return 'El estado debe ser de al menos 3 letras';
               //     }
               //     return null;
               //   },
               // ),
-              //FECHA EVENTO
+              //FECHA Y HORA
               Container(
                 margin: EdgeInsets.only(top: 15),
                 child: Row(
                   children: [
-                    Text('Fecha evento: '),
-                    Text(formatoFecha.format(fecha_matricula), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(MdiIcons.calendar),
-                      onPressed: () {
-                        showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime.now(),
-                          locale: Locale('es', 'ES'),
-                        ).then((fecha) {
-                          setState(() {
-                            fecha_matricula = fecha ?? fecha_matricula;
-                          });
-                        });
-                      },
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey.shade100,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Bootstrap.calendar_event),
+                        onPressed: () async {
+                          DateTime? dateTime = await showOmniDateTimePicker(
+                            context: context,
+                            initialDate: fechaYHoraEvento,
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime.now(),
+                            is24HourMode: false,
+                            isShowSeconds: false,
+                            minutesInterval: 1,
+                            secondsInterval: 1,
+                            isForce2Digits: true,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(16)),
+                            constraints: const BoxConstraints(
+                              maxWidth: 350,
+                              maxHeight: 650,
+                            ),
+                            transitionBuilder: (context, anim1, anim2, child) {
+                              return FadeTransition(
+                                opacity: anim1.drive(
+                                  Tween(
+                                    begin: 0,
+                                    end: 1,
+                                  ),
+                                ),
+                                child: child,
+                              );
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 200),
+                            barrierDismissible: true,
+                            selectableDayPredicate: (dateTime) {
+                              if (dateTime == DateTime(2023, 2, 25)) {
+                                return false;
+                              } else {
+                                return true;
+                              }
+                            },
+                          );
+
+                          if (dateTime != null &&
+                              dateTime != fechaYHoraEvento) {
+                            setState(() {
+                              fechaYHoraEvento = dateTime;
+                            });
+                          }
+                        },
+                      ),
                     ),
+                    Text('  Fecha y Hora: ',
+                        style: TextStyle(fontSize: 17)),
+                    Text(formatoFechaYHora.format(fechaYHoraEvento),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18)),
+                    Spacer(),
                   ],
                 ),
               ),
-              // //JORNADA
-              // Container(
-              //   margin: EdgeInsets.only(top: 10),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       Text('Jornada'),
-              //       RadioListTile(
-              //         title: Text('Diurna'),
-              //         value: 'd',
-              //         groupValue: jornada,
-              //         onChanged: (jornadaSeleccionada) {
-              //           setState(() {
-              //             jornada = jornadaSeleccionada!;
-              //           });
-              //         },
-              //       ),
-              //       RadioListTile(
-              //         title: Text('Vespertina'),
-              //         value: 'v',
-              //         groupValue: jornada,
-              //         onChanged: (jornadaSeleccionada) {
-              //           setState(() {
-              //             jornada = jornadaSeleccionada!;
-              //           });
-              //         },
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              // //CARRERA
-              // FutureBuilder(
-              //     future: FirestoreService().carreras(),
-              //     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              //       if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
-              //         //esperando
-              //         return Text('Cargando Carreras...');
-              //       } else {
-              //         var carreras = snapshot.data!.docs;
-              //         return DropdownButtonFormField<String>(
-              //           value: carrera == '' ? carreras[0]['nombre'] : carrera,
-              //           decoration: InputDecoration(labelText: 'Carrera'),
-              //           // items: [
-              //           //   DropdownMenuItem(child: Text('T.U. en Informática'), value: 'T.U. en Informática'),
-              //           //   DropdownMenuItem(child: Text('Ing. en Informática'), value: 'Ing. en Informática'),
-              //           // ],
-              //           items: carreras.map<DropdownMenuItem<String>>((carr) {
-              //             return DropdownMenuItem<String>(
-              //               child: Text(carr['nombre']),
-              //               value: carr['nombre'],
-              //             );
-              //           }).toList(),
-              //           onChanged: (carreraSeleccionada) {
-              //             setState(() {
-              //               carrera = carreraSeleccionada!;
-              //             });
-              //           },
-              //         );
-              //       }
-              //     }),
-              
-              //BOTON
               Container(
                 margin: EdgeInsets.only(top: 30),
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: Text('Agregar Evento', style: TextStyle(color: Colors.white)),
+                  child: Text('Agregar Evento',
+                      style: TextStyle(color: Colors.white)),
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      //formulario está ok
-                      //proceder con agregar estudiante a bd
                       FirestoreService().eventosAgregar(
                         nombreCtrl.text.trim(),
-                        fecha_matricula,
+                        fecha_actual,
                         lugarCtrl.text.trim(),
                         descripcionCtrl.text.trim(),
                         tipoCtrl.text.trim(),
                         int.tryParse(likeCtrl.text.trim()) ?? 0,
                         estadoCtrl.text.trim(),
-                        
-                        // fecha_matricula,
-                        // jornada,
-                        // carrera,
                       );
                       Navigator.pop(context);
                     }

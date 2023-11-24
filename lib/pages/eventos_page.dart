@@ -25,13 +25,10 @@ class _EventosPageState extends State<EventosPage> {
   final formatoFecha = DateFormat(' dd-MMM-yyyy HH:mm');
 
   final formatoMes = DateFormat('MMM');
-
   final formatoDia = DateFormat('dd');
 
   final scrollController = ScrollController();
-
   bool like = true;
-
   final flip = GestureFlipCardController();
 
   @override
@@ -93,8 +90,6 @@ class _EventosPageState extends State<EventosPage> {
                         var evento =
                             eventos[index].data() as Map<String, dynamic>;
                         DateTime fecha_evento =
-                            (evento['fecha'] as Timestamp).toDate();
-                        DateTime hora_evento =
                             (evento['fecha'] as Timestamp).toDate();
                         return GestureFlipCard(
                           controller: flip,
@@ -318,14 +313,6 @@ class _EventosPageState extends State<EventosPage> {
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white)),
                                   SizedBox(height: 4),
-                                  // Text(
-                                  //   '${evento['nombre']}',
-                                  //   style: TextStyle(
-                                  //       fontSize: 18,
-                                  //       fontWeight: FontWeight.bold,
-                                  //       color: Colors.white),
-                                  // ),
-                                  SizedBox(height: 4),
                                   Row(
                                     children: [
                                       SizedBox(width: 4),
@@ -371,7 +358,7 @@ class _EventosPageState extends State<EventosPage> {
                                         size: 18,
                                       ),
                                       Text(
-                                        formatoFecha.format(hora_evento),
+                                        formatoFecha.format(fecha_evento),
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
