@@ -1,9 +1,3 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-// ignore_for_file: avoid_print
-
 import 'dart:async';
 import 'dart:convert' show json;
 
@@ -22,7 +16,7 @@ const List<String> scopes = <String>[
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   // Optional clientId
-  // clientId: 'your-client_id.apps.googleusercontent.com',
+  clientId: 'your-client_id.apps.googleusercontent.com',
   scopes: scopes,
 );
 
@@ -137,12 +131,13 @@ class _SignInDemoState extends State<SignInDemo> {
   // On the web, the on-click handler of the Sign In button is owned by the JS
   // SDK, so this method can be considered mobile only.
   Future<void> _handleSignIn() async {
-    try {
-      await _googleSignIn.signIn();
-    } catch (error) {
-      print(error);
-    }
+  try {
+    await _googleSignIn.signIn();
+  } catch (error) {
+    print('Error signing in: $error');
+    // Add additional error handling here
   }
+}
 
   // Prompts the user to authorize `scopes`.
   //
