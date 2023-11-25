@@ -6,7 +6,7 @@ class FirestoreService {
   }
 
   //insertar nuevo estudiante
-  Future<void> eventosAgregar(String nombre, DateTime fecha, String lugar, String descripcion, String tipo, int like, String foto) async {
+  Future<void> eventosAgregar(String nombre, DateTime fecha, String lugar, String descripcion, String tipo, int like, String foto, String estado) async {
     return FirebaseFirestore.instance.collection('eventos').doc().set({
       'nombre': nombre,
       'fecha': fecha,
@@ -15,10 +15,9 @@ class FirestoreService {
       'tipo': tipo,
       'like': like,
       'foto': foto,
+      'estado':estado,
     });
   }
-
-
 
   //borrar evento
   Future<void> eventosBorrar(String docId) async {

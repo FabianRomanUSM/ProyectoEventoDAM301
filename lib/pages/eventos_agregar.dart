@@ -24,13 +24,15 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
   TextEditingController tipoCtrl = TextEditingController();
   TextEditingController likeCtrl = TextEditingController();
   TextEditingController fotoCtrl = TextEditingController();
-
+    
   final formKey = GlobalKey<FormState>();
 
   DateTime fechaYHoraEvento = DateTime.now();
   final formatoFechaYHora = DateFormat('dd/MM/yyyy hh:mm a');
 
   File? imagen_a_cargar;
+
+  String estado = 'a';
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +131,9 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                             context: context,
                             initialDate: fechaYHoraEvento,
                             firstDate: DateTime(2020),
-                            lastDate: DateTime.now(),
+                            // Cambia lastDate a un valor futuro, por ejemplo, 5 años desde ahora
+                            lastDate:
+                                DateTime.now().add(Duration(days: 365 * 5)),
                             is24HourMode: false,
                             isShowSeconds: false,
                             minutesInterval: 1,
@@ -156,14 +160,10 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                                 const Duration(milliseconds: 200),
                             barrierDismissible: true,
                             selectableDayPredicate: (dateTime) {
-                              if (dateTime == DateTime(2023, 2, 25)) {
-                                return false;
-                              } else {
-                                return true;
-                              }
+                              // Puedes agregar una lógica personalizada aquí para deshabilitar ciertas fechas si es necesario
+                              return true;
                             },
                           );
-
                           if (dateTime != null &&
                               dateTime != fechaYHoraEvento) {
                             setState(() {
@@ -173,8 +173,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                         },
                       ),
                     ),
-                    Text('  Fecha y Hora: ',
-                        style: TextStyle(fontSize: 17)),
+                    Text('  Fecha y Hora: ', style: TextStyle(fontSize: 17)),
                     Text(formatoFechaYHora.format(fechaYHoraEvento),
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18)),
@@ -182,43 +181,71 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                   ],
                 ),
               ),
+              //ESTADO
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Estado: ' ,style: TextStyle(fontSize: 18)),
+                    RadioListTile(
+                      title: Text('Activo'),
+                      value: 'a',
+                      groupValue: estado,
+                      onChanged: (estadoSeleccionada) {
+                        setState(() {
+                          estado = estadoSeleccionada!;
+                        });
+                      },
+                    ),
+                    RadioListTile(
+                      title: Text('Inactivo'),
+                      value: 'v',
+                      groupValue: estado,
+                      onChanged: (estadoSeleccionada) {
+                        setState(() {
+                          estado = estadoSeleccionada!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
               //FOTO
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.greenAccent.shade700),
-                onPressed: () async{
-                  final imagen = await getImage();
-                  setState((){
-                    imagen_a_cargar = File(imagen!.path);
-                  });
-                }, 
-                child: Text ('Subir imagen desde dispositivo', style: TextStyle(color: Colors.white))
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent.shade700),
-                onPressed: () async{
-                  if (imagen_a_cargar == null) {
-                    return;                    
-                  }
-                  final uploaded = await uploadImage(imagen_a_cargar!);
-                  if (uploaded) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Imagen subida correctamente')));
-                  } else{
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al subir la imagen')));
-                  }
-                }, 
-                child: Text ('Subir imagen desde Farebase', style: TextStyle(color: Colors.white))),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.greenAccent.shade700),
+                  onPressed: () async {
+                    final imagen = await getImage();
+                    setState(() {
+                      imagen_a_cargar = File(imagen!.path);
+                    });
+                    if (imagen_a_cargar == null) {
+                      return;
+                    }
+                    final uploaded = await uploadImage(imagen_a_cargar!);
+                    if (uploaded) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Imagen subida correctamente')));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Error al subir la imagen')));
+                    }
+                  },
+                  child: Text('Subir imagen desde dispositivo',
+                      style: TextStyle(color: Colors.white))),
               Column(
                 children: [
-                  imagen_a_cargar != null ? Image.file(imagen_a_cargar!) :
-                  Container(
-                    margin: const EdgeInsets.all(5),
-                    height: 200,
-                    width: double.infinity,
-                    color: Colors.grey.shade400,
-                  ),
+                  imagen_a_cargar != null
+                      ? Image.file(imagen_a_cargar!)
+                      : Container(
+                          margin: const EdgeInsets.all(5),
+                          height: 200,
+                          width: double.infinity,
+                          color: Colors.grey.shade400,
+                        ),
                 ],
               ),
-              
               //BOTON
               Container(
                 margin: EdgeInsets.only(top: 30),
@@ -237,6 +264,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                         tipoCtrl.text.trim(),
                         int.tryParse(likeCtrl.text.trim()) ?? 0,
                         fotoCtrl.text.trim(),
+                        estado,
                       );
                       Navigator.pop(context);
                     }
