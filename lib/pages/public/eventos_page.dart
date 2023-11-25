@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:proyecto_evento/pages/eventos_agregar.dart';
+import 'package:proyecto_evento/pages/public/eventos_agregar.dart';
+import 'package:proyecto_evento/pages/public/login_page.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _EventosPageState extends State<EventosPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Eventos'),
+         title: Text('Eventos', style: TextStyle(fontWeight: FontWeight.bold)),
         leading: Icon(
           MdiIcons.calendar,
           color: Colors.yellowAccent.shade700,
@@ -54,7 +55,10 @@ class _EventosPageState extends State<EventosPage> {
             ),
             child: IconButton(
               onPressed: () {
-                // Acción a realizar al hacer clic en el icono de Google.
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               icon: Logo(Logos.google), // Reemplaza con tu icono de Google
               color: Colors.black,

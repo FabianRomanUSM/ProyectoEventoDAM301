@@ -38,7 +38,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Formulario Evento', style: TextStyle(color: Colors.white)),
+        title: Text('Formulario Evento', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: Form(
         key: formKey,

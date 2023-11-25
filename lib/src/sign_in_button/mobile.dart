@@ -5,6 +5,12 @@ import 'stub.dart';
 Widget buildSignInButton({HandleSignInFn? onPressed}) {
   return ElevatedButton(
     onPressed: onPressed,
-    child: const Text('SIGN IN'),
+    child: const Text(
+      'INICIAR SESIÓN',
+      style: TextStyle(color: Colors.green), // Set text color to white
+    ),
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // Set background color to green
+    ),
   );
 }
