@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert' show json;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -141,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
               identity: user,
             ),
             title: Text(user.displayName ?? ''),
-            subtitle: Text(user.email!),
+            subtitle: Text(user.email),
           ),
           const Text(
             'Iniciado sesión correctamente.',

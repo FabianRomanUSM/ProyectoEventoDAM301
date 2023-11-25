@@ -1,11 +1,8 @@
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:proyecto_evento/services/select_image.dart';
 import 'package:proyecto_evento/services/upload_image.dart';

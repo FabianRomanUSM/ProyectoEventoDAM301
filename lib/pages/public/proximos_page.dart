@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:proyecto_evento/pages/public/eventos_agregar.dart';
 import 'package:proyecto_evento/pages/public/eventos_page.dart';
 import 'package:proyecto_evento/pages/public/finalizados_page.dart';
 import 'package:proyecto_evento/pages/public/login_page.dart';
-import 'package:proyecto_evento/pages/public/proximos_page.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
