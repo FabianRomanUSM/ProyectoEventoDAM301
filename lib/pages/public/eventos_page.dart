@@ -229,21 +229,33 @@ class _EventosPageState extends State<EventosPage> {
                                         ),
                                       ),
                                       trailing: Container(
-                                        child: InkWell(
-                                          child: Icon(
-                                            like
-                                                ? Icons.favorite_outline
-                                                : Icons.favorite_border,
-                                            color: like
-                                                ? Colors.red.shade900
-                                                : Colors.red.shade900,
-                                            size: 40,
-                                          ),
-                                          onTap: () {
-                                            // FirestoreService().MeGusta(widget., evento['like']);
-                                          },
+                                      child: InkWell(
+                                        child: Icon(
+                                          like
+                                              ? Icons.favorite
+                                              : Icons.favorite,
+                                          color: like
+                                              ? Colors.red.shade900
+                                              : Colors.red.shade900,
+                                          size: 40,
                                         ),
+                                        onTap: () async {
+                                          // Obtener el ID del evento actual
+                                          String docId = eventos[index].id;
+
+                                          // Obtener el número actual de likes
+                                          int currentLikes = evento['like'];
+
+                                          // Actualizar el número de likes en Firestore
+                                          await FirestoreService().MeGusta(docId, currentLikes);
+
+                                          // Cambiar el estado local para actualizar el ícono de "Me gusta"
+                                          setState(() {
+                                            like = !like;
+                                          });
+                                        },
                                       ),
+                                    ),
                                       onLongPress: () {
                                         showJustBottomSheet(
                                           context: context,
@@ -453,14 +465,7 @@ class _EventosPageState extends State<EventosPage> {
           Align(alignment: Alignment.bottomCenter, child: bottomNav()),
         ],
       ),
-      
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          MaterialPageRoute route = MaterialPageRoute(builder: (context) => EventoAgregarPage());
-          Navigator.push(context, route);
-        },
-      ),
+       
     );
   }
   Widget bodyContainer() {
