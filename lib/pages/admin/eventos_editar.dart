@@ -2,29 +2,29 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:proyecto_evento/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:proyecto_evento/services/firestore_service.dart';
 import 'package:proyecto_evento/services/select_image.dart';
 import 'package:proyecto_evento/services/upload_image.dart';
 
-class EventoEditarPage extends StatefulWidget {
-  EventoEditarPage({Key? key}) : super(key: key);
+class EventosEditarPage extends StatefulWidget {
+  final String eventId;
+
+  EventosEditarPage({required this.eventId, Key? key}) : super(key: key);
 
   @override
-  State<EventoEditarPage> createState() => EventoEditarPageState();
+  State<EventosEditarPage> createState() => EventosEditarPageState();
 }
 
-class EventoEditarPageState extends State<EventoEditarPage> {
+class EventosEditarPageState extends State<EventosEditarPage> {
   TextEditingController nombreCtrl = TextEditingController();
   TextEditingController lugarCtrl = TextEditingController();
   TextEditingController descripcionCtrl = TextEditingController();
   TextEditingController tipoCtrl = TextEditingController();
-  TextEditingController likeCtrl = TextEditingController();
-  TextEditingController imageCtrl = TextEditingController();
-    
+
   final formKey = GlobalKey<FormState>();
 
   DateTime fechaYHoraEvento = DateTime.now();
@@ -35,10 +35,32 @@ class EventoEditarPageState extends State<EventoEditarPage> {
   String estado = 'Activo';
 
   @override
+  void initState() {
+    super.initState();
+    obtenerDatosEvento();
+  }
+
+  void obtenerDatosEvento() async {
+    DocumentSnapshot eventoSnapshot =
+        await FirebaseFirestore.instance.collection('eventos').doc(widget.eventId).get();
+
+    if (eventoSnapshot.exists) {
+      setState(() {
+        nombreCtrl.text = eventoSnapshot['nombre'];
+        lugarCtrl.text = eventoSnapshot['lugar'];
+        descripcionCtrl.text = eventoSnapshot['descripcion'];
+        tipoCtrl.text = eventoSnapshot['tipo'];
+        fechaYHoraEvento = eventoSnapshot['fecha'].toDate();
+        estado = eventoSnapshot['estado'];
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Formulario Evento', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text('Editar Evento', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: Form(
         key: formKey,
@@ -46,7 +68,6 @@ class EventoEditarPageState extends State<EventoEditarPage> {
           padding: EdgeInsets.all(10),
           child: ListView(
             children: [
-              //NOMBRE
               TextFormField(
                 controller: nombreCtrl,
                 decoration: InputDecoration(
@@ -62,7 +83,6 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                   return null;
                 },
               ),
-              //LUGAR
               TextFormField(
                 controller: lugarCtrl,
                 decoration: InputDecoration(
@@ -78,7 +98,6 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                   return null;
                 },
               ),
-              //DESCRIPCION
               TextFormField(
                 controller: descripcionCtrl,
                 decoration: InputDecoration(
@@ -94,7 +113,6 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                   return null;
                 },
               ),
-              //TIPO
               TextFormField(
                 controller: tipoCtrl,
                 decoration: InputDecoration(
@@ -110,7 +128,6 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                   return null;
                 },
               ),
-              //FECHA Y HORA
               Container(
                 margin: EdgeInsets.only(top: 15),
                 child: Row(
@@ -131,16 +148,13 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                             context: context,
                             initialDate: fechaYHoraEvento,
                             firstDate: DateTime(2020),
-                            // Cambia lastDate a un valor futuro, por ejemplo, 5 años desde ahora
-                            lastDate:
-                                DateTime.now().add(Duration(days: 365 * 5)),
+                            lastDate: DateTime.now().add(Duration(days: 365 * 5)),
                             is24HourMode: false,
                             isShowSeconds: false,
                             minutesInterval: 1,
                             secondsInterval: 1,
                             isForce2Digits: true,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16)),
+                            borderRadius: const BorderRadius.all(Radius.circular(16)),
                             constraints: const BoxConstraints(
                               maxWidth: 350,
                               maxHeight: 650,
@@ -156,16 +170,13 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                                 child: child,
                               );
                             },
-                            transitionDuration:
-                                const Duration(milliseconds: 200),
+                            transitionDuration: const Duration(milliseconds: 200),
                             barrierDismissible: true,
                             selectableDayPredicate: (dateTime) {
-                              // Puedes agregar una lógica personalizada aquí para deshabilitar ciertas fechas si es necesario
                               return true;
                             },
                           );
-                          if (dateTime != null &&
-                              dateTime != fechaYHoraEvento) {
+                          if (dateTime != null && dateTime != fechaYHoraEvento) {
                             setState(() {
                               fechaYHoraEvento = dateTime;
                             });
@@ -181,13 +192,12 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                   ],
                 ),
               ),
-              //ESTADO
               Container(
                 margin: EdgeInsets.only(top: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Estado: ' ,style: TextStyle(fontSize: 18)),
+                    Text('Estado: ', style: TextStyle(fontSize: 18)),
                     RadioListTile(
                       title: Text('Activo'),
                       value: 'Activo',
@@ -211,29 +221,28 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                   ],
                 ),
               ),
-              //FOTO
               ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.greenAccent.shade700),
-                  onPressed: () async {
-                    final imagen = await getImage();
-                    setState(() {
-                      imagen_a_cargar = File(imagen!.path);
-                    });
-                    if (imagen_a_cargar == null) {
-                      return;
-                    }
-                    final String uploaded = await uploadImage(imagen_a_cargar!);
-                    if (uploaded != '') {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Imagen subida correctamente')));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Error al subir la imagen')));
-                    }
-                  },
-                  child: Text('Subir imagen desde dispositivo',
-                      style: TextStyle(color: Colors.white))),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.greenAccent.shade700),
+                onPressed: () async {
+                  final imagen = await getImage();
+                  setState(() {
+                    imagen_a_cargar = File(imagen!.path);
+                  });
+                  if (imagen_a_cargar == null) {
+                    return;
+                  }
+                  final String uploaded = await uploadImage(imagen_a_cargar!);
+                  if (uploaded != '') {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Imagen subida correctamente')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Error al subir la imagen')));
+                  }
+                },
+                child: Text('Subir imagen desde dispositivo',
+                style: TextStyle(color: Colors.white))),
               Column(
                 children: [
                   imagen_a_cargar != null
@@ -246,29 +255,26 @@ class EventoEditarPageState extends State<EventoEditarPage> {
                         ),
                 ],
               ),
-              //BOTON
               Container(
                 margin: EdgeInsets.only(top: 30),
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: Text('Agregar Evento',
-                      style: TextStyle(color: Colors.white)),
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      FirestoreService().eventosAgregar(
-                        nombreCtrl.text.trim(),
-                        fechaYHoraEvento,
-                        lugarCtrl.text.trim(),
-                        descripcionCtrl.text.trim(),
-                        tipoCtrl.text.trim(),
-                        int.tryParse(likeCtrl.text.trim()) ?? 0,
-                        imageCtrl.text.trim(),
-                        estado,
-                      );
-                      Navigator.pop(context);
-                    }
-                  },
+                  child: Text('Guardar Cambios', style: TextStyle(color: Colors.white)),
+                 onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    // FirestoreService().editarEvento(
+                    //   widget.eventId,
+                    //   nombreCtrl.text.trim(),
+                    //   fechaYHoraEvento,
+                    //   lugarCtrl.text.trim(),
+                    //   descripcionCtrl.text.trim(),
+                    //   tipoCtrl.text.trim(),
+                    //   estado,
+                    // );
+                    Navigator.pop(context);
+                  }
+                },
                 ),
               ),
             ],

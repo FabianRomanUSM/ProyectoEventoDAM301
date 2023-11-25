@@ -36,43 +36,6 @@ class _AdministradorPageState extends State<AdministradorPage> {
   bool like = true;
   final flip = GestureFlipCardController();
 
-  // int selectedPos = 0;
-
-  // double bottomNavBarHeight = 60;
-
-  // List<TabItem> tabItems = List.of([
-  //   TabItem(
-  //     Icons.home,
-  //     "Eventos",
-  //     Colors.orange,
-  //     labelStyle: TextStyle(
-  //       fontWeight: FontWeight.normal,
-  //     ),
-  //   ),
-  //   TabItem(
-  //     Icons.search,
-  //     "Finalizados",
-  //     Colors.red,
-  //     labelStyle: TextStyle(
-  //       fontWeight: FontWeight.bold,
-  //     ),
-  //   ),
-  //   TabItem(
-  //     Icons.layers,
-  //     "Proximos",
-  //     Colors.blue,
-  //     circleStrokeColor: Colors.black,
-  //   ),
-  // ]);
-
-  // late CircularBottomNavigationController _navigationController;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _navigationController = CircularBottomNavigationController(selectedPos);
-  // }
-
   @override
   Widget build(BuildContext context) {
     tz.initializeTimeZones();
@@ -206,60 +169,68 @@ class _AdministradorPageState extends State<AdministradorPage> {
                                           ),
                                         ],
                                       ),
-                                      subtitle: Container(
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Bootstrap.clipboard_check_fill,
-                                              color: Colors.white,
-                                              size: 16,
-                                            ),
-                                            Text(
-                                              ' ${evento['estado']} ',
-                                              style: TextStyle(
+                                      subtitle: InkWell(
+                                        onTap: () {
+                                          // Obtener el ID del documento del evento actual
+                                          String docId = eventos[index].id;
+
+                                          // Obtener el estado actual del evento
+                                          String estadoActual =
+                                              evento['estado'];
+
+                                          // Cambiar el estado al contrario
+                                          String nuevoEstado =
+                                              (estadoActual == 'Activo')
+                                                  ? 'Inactivo'
+                                                  : 'Activo';
+
+                                          // Llamar al método para cambiar el estado
+                                          _cambiarEstado(docId, nuevoEstado);
+                                        },
+                                        child: Container(
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Bootstrap.clipboard_check_fill,
+                                                color: Colors.white,
+                                                size: 16,
+                                              ),
+                                              Text(
+                                                ' ${evento['estado']} ',
+                                                style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            ),
-                                          ],
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       trailing: Row(
-  mainAxisSize: MainAxisSize.min,
-  children: [
-    Container(
-      margin: EdgeInsets.only(right: 16),
-      child: InkWell(
-        onTap: () {
-          // Obtener el ID del documento del evento actual
-          String docId = eventos[index].id;
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(right: 16),
+                                            child: InkWell(
+                                              onTap: () {
+                                                // Obtener el ID del documento del evento actual
+                                                String docId =
+                                                    eventos[index].id;
 
-          // Mostrar el diálogo de confirmación
-          _mostrarDialogoConfirmacion(docId);
-        },
-        child: Icon(
-          MdiIcons.trashCan,
-          size: 40,
-          color: Colors.white,
-        ),
-      ),
-    ),
-    InkWell(
-      onTap: () {
-        // Obtener el ID del documento del evento actual
-        String docId = eventos[index].id;
-
-        // Navegar a la página de edición
-        _navegarAEditarEvento(docId);
-      },
-      child: Icon(
-        MdiIcons.pencil,
-        size: 40,
-        color: Colors.white,
-      ),
-    ),
-  ],
-),
+                                                // Mostrar el diálogo de confirmación
+                                                _mostrarDialogoConfirmacion(
+                                                    docId);
+                                              },
+                                              child: Icon(
+                                                MdiIcons.trashCan,
+                                                size: 40,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                       onLongPress: () {
                                         showJustBottomSheet(
                                           context: context,
@@ -480,38 +451,36 @@ class _AdministradorPageState extends State<AdministradorPage> {
     );
   }
 
-  void _navegarAEditarEvento(String docId) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => EventoEditarPage()),
-  );
-}
+  void _cambiarEstado(String docId, String nuevoEstado) {
+    // Llamar a la función para actualizar el estado del evento en Firestore
+    FirestoreService().actualizarEstadoEvento(docId, nuevoEstado);
+  }
 
   void _mostrarDialogoConfirmacion(String docId) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Confirmar borrado'),
-        content: Text('¿Estás seguro de que deseas borrar este evento?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Cerrar el diálogo
-            },
-            child: Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              // Llamar a la función para borrar el evento en Firestore
-              FirestoreService().eventosBorrar(docId);
-              Navigator.of(context).pop(); // Cerrar el diálogo
-            },
-            child: Text('Borrar'),
-          ),
-        ],
-      );
-    },
-  );
-}
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmar borrado'),
+          content: Text('¿Estás seguro de que deseas borrar este evento?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Llamar a la función para borrar el evento en Firestore
+                FirestoreService().eventosBorrar(docId);
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: Text('Borrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

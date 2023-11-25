@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //LISTAR EVENTO POR FECHA
   Stream<QuerySnapshot> eventos() {
-    return FirebaseFirestore.instance.collection('eventos').orderBy('fecha').snapshots();
+    return _firestore.collection('eventos').snapshots();
   }
 
   //LISTAR EVENTO POR FINALIZADOS, 3 DIAS
@@ -40,14 +41,25 @@ class FirestoreService {
     return FirebaseFirestore.instance.collection('eventos').doc(docId).delete();
   }
 
-//EDITAR EVENTO
-  Future<void> editar(String docId, bool estado) async {
-    bool nuevoEstado = !estado; 
+// EDITAR EVENTO
+  Future<void> editarEvento(
+    String docId,
+    String nombre,
+    DateTime fecha,
+    String lugar,
+    String descripcion,
+    String tipo,
+    String estado,
+  ) async {
     return FirebaseFirestore.instance.collection('eventos').doc(docId).update({
-      'estado': nuevoEstado,
-    }
-  );
-}
+      'nombre': nombre,
+      'fecha': fecha,
+      'lugar': lugar,
+      'descripcion': descripcion,
+      'tipo': tipo,
+      'estado': estado,
+    });
+  }
 
   //LIKE
   Stream<DocumentSnapshot> streamEvento(String docId) {
@@ -59,4 +71,10 @@ class FirestoreService {
       'like': numero,
     });
   }
+
+  Future<void> actualizarEstadoEvento(String docId, String nuevoEstado) {
+    return FirebaseFirestore.instance.collection('eventos').doc(docId).update({'estado': nuevoEstado});
+  }
 }
+
+
