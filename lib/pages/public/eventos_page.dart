@@ -3,12 +3,9 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:proyecto_evento/pages/public/eventos_agregar.dart';
 import 'package:proyecto_evento/pages/public/login_page.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -16,6 +13,10 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:just_bottom_sheet/drag_zone_position.dart';
 import 'package:just_bottom_sheet/just_bottom_sheet.dart';
 import 'package:just_bottom_sheet/just_bottom_sheet_configuration.dart';
+
+import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
+
 
 class EventosPage extends StatefulWidget {
   @override
@@ -31,6 +32,44 @@ class _EventosPageState extends State<EventosPage> {
   final scrollController = ScrollController();
   bool like = true;
   final flip = GestureFlipCardController();
+
+  int selectedPos = 0;
+
+  double bottomNavBarHeight = 60;
+
+  List<TabItem> tabItems = List.of([
+    TabItem(
+      Icons.home,
+      "Finalizados",
+      Colors.red,
+      labelStyle: TextStyle(
+        fontWeight: FontWeight.normal,
+      ),
+    ),
+    TabItem(
+      Icons.search,
+      "Eventos",
+      Colors.orange,
+      labelStyle: TextStyle(
+        color: Colors.green,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    TabItem(
+      Icons.layers,
+      "Proximos",
+      Colors.blue,
+      circleStrokeColor: Colors.black,
+    ),
+  ]);
+
+  late CircularBottomNavigationController _navigationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _navigationController = CircularBottomNavigationController(selectedPos);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +105,12 @@ class _EventosPageState extends State<EventosPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            child: bodyContainer(),
+            padding: EdgeInsets.only(bottom: bottomNavBarHeight),
+            ),
           Text('Estado de conexión'),
           // EMAIL USER
           Container(
@@ -402,6 +445,7 @@ class _EventosPageState extends State<EventosPage> {
               ),
             ),
           ),
+          Align(alignment: Alignment.bottomCenter, child: bottomNav())
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -412,5 +456,83 @@ class _EventosPageState extends State<EventosPage> {
         },
       ),
     );
+  }
+  Widget bodyContainer() {
+    Color? selectedColor = tabItems[selectedPos].circleColor;
+    String slogan;
+    switch (selectedPos) {
+      case 0:
+        slogan = "Family, Happiness, Food";
+        break;
+      case 1:
+        slogan = "Find, Check, Use";
+        break;
+      case 2:
+        slogan = "Receive, Review, Rip";
+        break;
+      default:
+        slogan = "";
+        break;
+    }
+
+    return GestureDetector(
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: selectedColor,
+        child: Center(
+          child: Text(
+            slogan,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
+      ),
+      onTap: () {
+        if (_navigationController.value == tabItems.length - 1) {
+          _navigationController.value = 0;
+        } else {
+          _navigationController.value = _navigationController.value! + 1;
+        }
+      },
+    );
+  }
+
+  Widget bottomNav() {
+    return CircularBottomNavigation(
+      tabItems,
+      controller: _navigationController,
+      selectedPos: selectedPos,
+      barHeight: bottomNavBarHeight,
+      // use either barBackgroundColor or barBackgroundGradient to have a gradient on bar background
+      barBackgroundColor: Colors.white,
+      // barBackgroundGradient: LinearGradient(
+      //   begin: Alignment.bottomCenter,
+      //   end: Alignment.topCenter,
+      //   colors: [
+      //     Colors.blue,
+      //     Colors.red,
+      //   ],
+      // ),
+      backgroundBoxShadow: <BoxShadow>[
+        BoxShadow(color: Colors.black45, blurRadius: 10.0),
+      ],
+      animationDuration: Duration(milliseconds: 300),
+      selectedCallback: (int? selectedPos) {
+        setState(() {
+          this.selectedPos = selectedPos ?? 0;
+          print(_navigationController.value);
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _navigationController.dispose();
   }
 }
