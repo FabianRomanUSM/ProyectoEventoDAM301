@@ -32,7 +32,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
 
   File? imagen_a_cargar;
 
-  String estado = 'a';
+  String estado = 'Activo';
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +190,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                     Text('Estado: ' ,style: TextStyle(fontSize: 18)),
                     RadioListTile(
                       title: Text('Activo'),
-                      value: 'a',
+                      value: 'Activo',
                       groupValue: estado,
                       onChanged: (estadoSeleccionada) {
                         setState(() {
@@ -200,7 +200,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                     ),
                     RadioListTile(
                       title: Text('Inactivo'),
-                      value: 'v',
+                      value: 'Inactivo',
                       groupValue: estado,
                       onChanged: (estadoSeleccionada) {
                         setState(() {

@@ -1,11 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
+
+  //LISTAR EVENTO POR FECHA
   Stream<QuerySnapshot> eventos() {
-    return FirebaseFirestore.instance.collection('eventos').snapshots();
+    return FirebaseFirestore.instance.collection('eventos').orderBy('fecha').snapshots();
   }
 
-  //insertar nuevo estudiante
+  //LISTAR EVENTO POR FINALIZADOS, 3 DIAS
+  Stream<QuerySnapshot> eventosFinalizados() {
+    DateTime actual = DateTime.now();
+    Timestamp timeStampNow = Timestamp.fromDate(actual);
+    return FirebaseFirestore.instance.collection('eventos').where('fecha', isLessThan: timeStampNow).snapshots();
+  }
+
+  //LISTAR EVENTO PROXIMOS
+  Stream<QuerySnapshot> eventosProximos() {
+    DateTime actual = DateTime.now();
+    Timestamp timeStampNow = Timestamp.fromDate(actual);
+    return FirebaseFirestore.instance.collection('eventos').where('fecha', isGreaterThanOrEqualTo: timeStampNow).snapshots();
+  }
+
+  //INSERTAR NUEVO EVENTO
   Future<void> eventosAgregar(String nombre, DateTime fecha, String lugar, String descripcion, String tipo, int like, String foto, String estado) async {
     return FirebaseFirestore.instance.collection('eventos').doc().set({
       'nombre': nombre,
@@ -15,17 +31,34 @@ class FirestoreService {
       'tipo': tipo,
       'like': like,
       'foto': foto,
-      'estado':estado,
+      'estado': estado,
     });
   }
 
-  //borrar evento
+  //BORRAR EVENTO
   Future<void> eventosBorrar(String docId) async {
     return FirebaseFirestore.instance.collection('eventos').doc(docId).delete();
   }
 
-  //obtener la lista de evento
-  Future<QuerySnapshot> ordenar() async {
-    return FirebaseFirestore.instance.collection('evento').orderBy('nombre').get();
+//EDITAR EVENTO
+  Future<void> editar(String docId, bool estado) async {
+    bool nuevoEstado = !estado; 
+    return FirebaseFirestore.instance.collection('eventos').doc(docId).update({
+      'estado': nuevoEstado,
+    }
+  );
+}
+
+  //megusta
+  Stream<DocumentSnapshot> streamEvento(String docId) {
+  return FirebaseFirestore.instance.collection('eventos').doc(docId).snapshots();
+} 
+
+
+  Future<void> MeGusta(String docId, int meGusta) async {
+    int numero = meGusta +1; 
+    return FirebaseFirestore.instance.collection('eventos').doc(docId).update({
+      'like': numero,
+    });
   }
 }

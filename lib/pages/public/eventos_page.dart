@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:proyecto_evento/pages/public/eventos_agregar.dart';
+import 'package:proyecto_evento/pages/public/finalizados_page.dart';
 import 'package:proyecto_evento/pages/public/login_page.dart';
+import 'package:proyecto_evento/pages/public/proximos_page.dart';
 import 'package:proyecto_evento/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -37,21 +39,22 @@ class _EventosPageState extends State<EventosPage> {
 
   double bottomNavBarHeight = 60;
 
+  
+
   List<TabItem> tabItems = List.of([
     TabItem(
       Icons.home,
-      "Finalizados",
-      Colors.red,
+      "Eventos",
+      Colors.orange,
       labelStyle: TextStyle(
         fontWeight: FontWeight.normal,
       ),
     ),
     TabItem(
       Icons.search,
-      "Eventos",
-      Colors.orange,
+      "Finalizados",
+      Colors.red,
       labelStyle: TextStyle(
-        color: Colors.green,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -462,13 +465,13 @@ class _EventosPageState extends State<EventosPage> {
     String slogan;
     switch (selectedPos) {
       case 0:
-        slogan = "Family, Happiness, Food";
+        slogan = "Todos los eventoso";
         break;
       case 1:
-        slogan = "Find, Check, Use";
+        slogan = "Eventos finalizad";
         break;
       case 2:
-        slogan = "Receive, Review, Rip";
+        slogan = "Proximos eventos";
         break;
       default:
         slogan = "";
@@ -502,29 +505,39 @@ class _EventosPageState extends State<EventosPage> {
   }
 
   Widget bottomNav() {
-    return CircularBottomNavigation(
-      tabItems,
-      controller: _navigationController,
-      selectedPos: selectedPos,
-      barHeight: bottomNavBarHeight,
-      // use either barBackgroundColor or barBackgroundGradient to have a gradient on bar background
-      barBackgroundColor: Colors.white,
-      // barBackgroundGradient: LinearGradient(
-      //   begin: Alignment.bottomCenter,
-      //   end: Alignment.topCenter,
-      //   colors: [
-      //     Colors.blue,
-      //     Colors.red,
-      //   ],
-      // ),
-      backgroundBoxShadow: <BoxShadow>[
-        BoxShadow(color: Colors.black45, blurRadius: 10.0),
-      ],
-      animationDuration: Duration(milliseconds: 300),
-      selectedCallback: (int? selectedPos) {
-        setState(() {
-          this.selectedPos = selectedPos ?? 0;
-          print(_navigationController.value);
+  return CircularBottomNavigation(
+    tabItems,
+    controller: _navigationController,
+    selectedPos: selectedPos,
+    barHeight: bottomNavBarHeight,
+    barBackgroundColor: Colors.white,
+    backgroundBoxShadow: <BoxShadow>[
+      BoxShadow(color: Colors.black45, blurRadius: 10.0),
+    ],
+    animationDuration: Duration(milliseconds: 300),
+    selectedCallback: (int? selectedPos) {
+      setState(() {
+        this.selectedPos = selectedPos ?? 0;
+        print(_navigationController.value);
+
+        // Agregar la navegación aquí
+        switch (selectedPos) {
+          case 0:
+            
+            break;
+          case 1:
+            Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FinalizadosPage()),
+                );
+            break;
+          case 2:
+            Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProximosPage()),
+                );
+            break;
+        }
         });
       },
     );
