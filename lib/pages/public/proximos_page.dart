@@ -42,7 +42,7 @@ class _ProximosPageState extends State<ProximosPage> {
 
   List<TabItem> tabItems = List.of([
     TabItem(
-      Icons.home,
+      Icons.calendar_today,
       "Eventos",
       Colors.orange,
       labelStyle: TextStyle(
@@ -50,7 +50,7 @@ class _ProximosPageState extends State<ProximosPage> {
       ),
     ),
     TabItem(
-      Icons.search,
+      Icons.calendar_view_week,
       "Finalizados",
       Colors.red,
       labelStyle: TextStyle(
@@ -58,7 +58,7 @@ class _ProximosPageState extends State<ProximosPage> {
       ),
     ),
     TabItem(
-      Icons.layers,
+      Icons.calendar_month,
       "Proximos",
       Colors.blue,
       circleStrokeColor: Colors.black,
