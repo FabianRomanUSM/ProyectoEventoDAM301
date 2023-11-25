@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:proyecto_evento/services/select_image.dart';
+import 'package:proyecto_evento/services/upload_image.dart';
 
 class EventoAgregarPage extends StatefulWidget {
   EventoAgregarPage({Key? key}) : super(key: key);
@@ -22,11 +23,9 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
   TextEditingController descripcionCtrl = TextEditingController();
   TextEditingController tipoCtrl = TextEditingController();
   TextEditingController likeCtrl = TextEditingController();
-  TextEditingController estadoCtrl = TextEditingController();
+  TextEditingController fotoCtrl = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
-  DateTime fecha_actual = DateTime.now();
-  final formatoFecha = DateFormat('dd-MMM-yyyy');
 
   DateTime fechaYHoraEvento = DateTime.now();
   final formatoFechaYHora = DateFormat('dd/MM/yyyy hh:mm a');
@@ -109,22 +108,6 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                   return null;
                 },
               ),
-              // //ESTADO
-              // TextFormField(
-              //   controller: estadoCtrl,
-              //   decoration: InputDecoration(
-              //     label: Text('Estado'),
-              //   ),
-              //   validator: (estado) {
-              //     if (estado!.isEmpty) {
-              //       return 'Indique el estado del evento';
-              //     }
-              //     if (estado.length < 3) {
-              //       return 'El estado debe ser de al menos 3 letras';
-              //     }
-              //     return null;
-              //   },
-              // ),
               //FECHA Y HORA
               Container(
                 margin: EdgeInsets.only(top: 15),
@@ -208,9 +191,22 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                     imagen_a_cargar = File(imagen!.path);
                   });
                 }, 
-                child: Text ('Subir imagen', style: TextStyle(color: Colors.white))),
-              
-              
+                child: Text ('Subir imagen desde dispositivo', style: TextStyle(color: Colors.white))
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent.shade700),
+                onPressed: () async{
+                  if (imagen_a_cargar == null) {
+                    return;                    
+                  }
+                  final uploaded = await uploadImage(imagen_a_cargar!);
+                  if (uploaded) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Imagen subida correctamente')));
+                  } else{
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al subir la imagen')));
+                  }
+                }, 
+                child: Text ('Subir imagen desde Farebase', style: TextStyle(color: Colors.white))),
               Column(
                 children: [
                   imagen_a_cargar != null ? Image.file(imagen_a_cargar!) :
@@ -222,6 +218,7 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                   ),
                 ],
               ),
+              
               //BOTON
               Container(
                 margin: EdgeInsets.only(top: 30),
@@ -234,12 +231,12 @@ class _EventoAgregarPageState extends State<EventoAgregarPage> {
                     if (formKey.currentState!.validate()) {
                       FirestoreService().eventosAgregar(
                         nombreCtrl.text.trim(),
-                        fecha_actual,
+                        fechaYHoraEvento,
                         lugarCtrl.text.trim(),
                         descripcionCtrl.text.trim(),
                         tipoCtrl.text.trim(),
                         int.tryParse(likeCtrl.text.trim()) ?? 0,
-                        estadoCtrl.text.trim(),
+                        fotoCtrl.text.trim(),
                       );
                       Navigator.pop(context);
                     }

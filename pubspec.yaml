@@ -52,6 +52,7 @@ dependencies:
     sdk: flutter
   omni_datetime_picker: ^1.0.9
   image_picker: ^1.0.4
+  firebase_storage: ^11.5.2
 
 
 dev_dependencies:
