@@ -10,14 +10,14 @@ import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:proyecto_evento/services/select_image.dart';
 import 'package:proyecto_evento/services/upload_image.dart';
 
-class EventoAgregarPage extends StatefulWidget {
-  EventoAgregarPage({Key? key}) : super(key: key);
+class EventoEditarPage extends StatefulWidget {
+  EventoEditarPage({Key? key}) : super(key: key);
 
   @override
-  State<EventoAgregarPage> createState() => _EventoAgregarPageState();
+  State<EventoEditarPage> createState() => EventoEditarPageState();
 }
 
-class _EventoAgregarPageState extends State<EventoAgregarPage> {
+class EventoEditarPageState extends State<EventoEditarPage> {
   TextEditingController nombreCtrl = TextEditingController();
   TextEditingController lugarCtrl = TextEditingController();
   TextEditingController descripcionCtrl = TextEditingController();

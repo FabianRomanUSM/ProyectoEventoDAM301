@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:icons_plus/icons_plus.dart';
+import 'package:proyecto_evento/pages/admin/administrador_page.dart';
 import 'package:proyecto_evento/src/sign_in_button/mobile.dart';
 
 const List<String> scopes = <String>[
@@ -209,7 +211,25 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('Iniciar sesión en Google', style: TextStyle(fontWeight: FontWeight.bold),),
         backgroundColor: Colors.blueAccent.shade700,
-        
+        actions: [
+          Container(
+            margin: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            child: IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AdministradorPage()),
+                );
+              },
+              icon: Icon(FontAwesome.person), // Reemplaza con tu icono de Google
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(

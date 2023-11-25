@@ -22,15 +22,15 @@ class FirestoreService {
   }
 
   //INSERTAR NUEVO EVENTO
-  Future<void> eventosAgregar(String nombre, DateTime fecha, String lugar, String descripcion, String tipo, int like, String foto, String estado) async {
+  Future<void> eventosAgregar(String nombre, DateTime fecha, String lugar, String descripcion, String tipo, int like, String image, String estado) async {
     return FirebaseFirestore.instance.collection('eventos').doc().set({
       'nombre': nombre,
       'fecha': fecha,
       'lugar': lugar,
       'descripcion': descripcion,
       'tipo': tipo,
-      'like': like,
-      'foto': foto,
+      'like': 0,
+      'image': image,
       'estado': estado,
     });
   }
@@ -49,12 +49,10 @@ class FirestoreService {
   );
 }
 
-  //megusta
+  //LIKE
   Stream<DocumentSnapshot> streamEvento(String docId) {
   return FirebaseFirestore.instance.collection('eventos').doc(docId).snapshots();
-} 
-
-
+  } 
   Future<void> MeGusta(String docId, int meGusta) async {
     int numero = meGusta +1; 
     return FirebaseFirestore.instance.collection('eventos').doc(docId).update({

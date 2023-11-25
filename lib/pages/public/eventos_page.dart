@@ -110,10 +110,12 @@ class _EventosPageState extends State<EventosPage> {
       ),
       body: Stack(
         children: <Widget>[
-          Padding(
-            child: bodyContainer(),
-            padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            ),
+          Expanded(
+            child: Padding(
+              child: bodyContainer(),
+              padding: EdgeInsets.only(bottom: bottomNavBarHeight),
+              ),
+          ),
           Text('Estado de conexión'),
           // EMAIL USER
           Container(
@@ -238,7 +240,7 @@ class _EventosPageState extends State<EventosPage> {
                                             size: 40,
                                           ),
                                           onTap: () {
-                                            like = !like;
+                                            // FirestoreService().MeGusta(widget., evento['like']);
                                           },
                                         ),
                                       ),
@@ -448,9 +450,10 @@ class _EventosPageState extends State<EventosPage> {
               ),
             ),
           ),
-          Align(alignment: Alignment.bottomCenter, child: bottomNav())
+          Align(alignment: Alignment.bottomCenter, child: bottomNav()),
         ],
       ),
+      
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
